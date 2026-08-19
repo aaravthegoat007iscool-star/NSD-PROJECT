@@ -1,0 +1,2420 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Indian Agricultural Supply Chain | Pipeline Analysis & Systemic
+      Alternatives
+    </title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      /* --- RUSTIC & PROFESSIONAL COLOR PALETTE & VARIABLES --- */
+      :root {
+        --bg-parchment: #f9f6f0;
+        --bg-card: #ffffff;
+        --text-main: #2c2825;
+        --text-muted: #5a534c;
+        --brand-green: #273b2b;
+        --brand-green-light: #3d5a43;
+        --terracotta: #c86d3b;
+        --terracotta-dark: #a55224;
+        --ochre: #d99b26;
+        --alert-rust: #9e3b29;
+        --alert-bg: #fdf4f2;
+        --border-rustic: #e4dcd3;
+        --shadow-soft: 0 10px 30px rgba(44, 40, 37, 0.06);
+        --shadow-hover: 0 15px 35px rgba(44, 40, 37, 0.12);
+        --radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Base Reset & Typography */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background-color: var(--bg-parchment);
+        color: var(--text-main);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        line-height: 1.65;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Lora", serif;
+        color: var(--brand-green);
+        line-height: 1.25;
+      }
+
+      p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* --- HEADER & NAVIGATION --- */
+      .top-banner {
+        background-color: var(--brand-green);
+        color: #e2eadf;
+        text-align: center;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      header.hero {
+        position: relative;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(61, 90, 67, 0.88) 0%,
+            rgba(61, 90, 67, 0.95) 100%
+          ),
+          url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1600&q=80")
+            center/cover no-repeat;
+        color: #ffffff;
+        padding: 5rem 1.5rem 5rem;
+        text-align: center;
+      }
+
+      header.hero h1 {
+        color: #ffffff;
+        font-size: 2.85rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+      }
+
+      header.hero p {
+        color: #e2eadf;
+        font-size: 1.25rem;
+        max-width: 720px;
+        margin: 0 auto;
+        font-family: "Lora", serif;
+        font-style: italic;
+      }
+
+      /* Sticky Navigation - Uniform compact styling */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(249, 246, 240, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-rustic);
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        padding: 0.5rem 1rem;
+      }
+
+      nav a {
+        background: var(--brand-green);
+        color: #ffffff;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        border-radius: 4px;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      nav a:hover {
+        background: var(--terracotta);
+        color: #ffffff;
+      }
+
+      nav a.nav-alert {
+        background: var(--alert-rust);
+        color: #ffffff;
+      }
+
+      nav a.nav-alert:hover {
+        background: #802e1e;
+        color: #ffffff;
+      }
+
+      nav a.nav-alt {
+        background: var(--brand-green-light);
+        color: #ffffff;
+      }
+
+      nav a.nav-alt:hover {
+        background: var(--brand-green);
+        color: #ffffff;
+      }
+
+      /* --- MAIN LAYOUT --- */
+      .container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+      }
+
+      .section-intro {
+        text-align: center;
+        max-width: 780px;
+        margin: 0 auto 3rem;
+      }
+
+      .section-intro h2 {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .section-intro p {
+        color: var(--text-muted);
+      }
+
+      /* --- GRAPHIC OVERVIEW SECTION --- */
+      .overview-graphic-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border-rustic);
+        border-radius: var(--radius);
+        padding: 2.5rem 2rem;
+        margin-bottom: 4rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .overview-graphic-section h3 {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        color: var(--brand-green);
+      }
+
+      .overview-subtitle {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+      }
+
+      .flow-graphic-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        position: relative;
+      }
+
+      @media (min-width: 768px) {
+        .flow-graphic-container {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .flow-graphic-container {
+          grid-template-columns: repeat(6, 1fr);
+        }
+      }
+
+      .flow-step-box {
+        background: var(--bg-parchment);
+        border: 1px solid var(--border-rustic);
+        border-radius: 8px;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        transition: var(--transition);
+        cursor: pointer;
+        height: 220px;
+      }
+
+      .flow-step-box:hover {
+        border-color: var(--terracotta);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .flow-step-num {
+        display: inline-block;
+        background: var(--brand-green);
+        color: #ffffff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+        align-self: center;
+      }
+
+      .flow-step-box h4 {
+        font-size: 1rem;
+        color: var(--brand-green);
+        margin-bottom: 0.5rem;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-weight: 700;
+      }
+
+      .flow-step-box p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+      }
+
+      /* --- CONSOLIDATED OVERVIEW MATRIX (PROBLEMS & SOLUTIONS) --- */
+      .overview-matrix-wrapper {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px dashed var(--border-rustic);
+      }
+
+      .overview-matrix-wrapper h4 {
+        text-align: center;
+        font-size: 1.4rem;
+        color: var(--brand-green);
+        margin-bottom: 1.5rem;
+      }
+
+      .matrix-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      @media (min-width: 768px) {
+        .matrix-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .matrix-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .matrix-card {
+        background: var(--bg-parchment);
+        border: 1px solid var(--border-rustic);
+        border-radius: 8px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .matrix-card:hover {
+        border-color: var(--terracotta);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .matrix-card-header {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--brand-green);
+        border-bottom: 1px solid var(--border-rustic);
+        padding-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .matrix-card-header span {
+        font-size: 0.75rem;
+        background: var(--terracotta);
+        color: #fff;
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+      }
+
+      .matrix-point {
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+
+      .matrix-point strong {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.15rem;
+      }
+
+      .matrix-point.problem-text strong {
+        color: var(--alert-rust);
+      }
+
+      .matrix-point.solution-text strong {
+        color: var(--brand-green-light);
+      }
+
+      .matrix-point p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin: 0;
+      }
+
+      /* --- STAGE CARDS GRID --- */
+      .stage-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-rustic);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 2.5rem;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr;
+        transition: var(--transition);
+      }
+
+      @media (min-width: 850px) {
+        .stage-card {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .stage-card:nth-child(even) .stage-image-container {
+          order: 2;
+        }
+      }
+
+      .stage-card:hover {
+        box-shadow: var(--shadow-hover);
+        border-color: var(--terracotta);
+      }
+
+      .stage-image-container {
+        position: relative;
+        min-height: 280px;
+        background-color: #eae5dc;
+        overflow: hidden;
+      }
+
+      .stage-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .stage-card:hover .stage-image-container img {
+        transform: scale(1.04);
+      }
+
+      .stage-number-tag {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: var(--brand-green);
+        color: #fff;
+        font-family: "Lora", serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        z-index: 2;
+      }
+
+      .stage-content {
+        padding: 2.25rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .stage-content h2 {
+        font-size: 1.65rem;
+        margin-bottom: 1rem;
+      }
+
+      .stage-content h2 span {
+        display: block;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--terracotta);
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+      }
+
+      /* --- PROBLEMS SECTION --- */
+      .problems-wrapper {
+        margin-top: 4rem;
+        padding-top: 2rem;
+      }
+
+      .problems-header {
+        background: var(--alert-bg);
+        border: 1px solid rgba(158, 59, 41, 0.2);
+        border-radius: var(--radius);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+
+      .problems-header h2 {
+        color: var(--alert-rust);
+        font-size: 2.2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .problem-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .problem-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .problem-block {
+        background: var(--bg-card);
+        border-left: 4px solid var(--alert-rust);
+        border-top: 1px solid var(--border-rustic);
+        border-right: 1px solid var(--border-rustic);
+        border-bottom: 1px solid var(--border-rustic);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        padding: 1.75rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .problem-block h3 {
+        color: var(--alert-rust);
+        font-size: 1.3rem;
+        margin-bottom: 0.85rem;
+      }
+
+      /* Structural Solution Accent Card */
+      .solution-block {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #f4f7f4 0%, #e6efe8 100%);
+        border: 2px solid var(--brand-green);
+        border-radius: var(--radius);
+        padding: 2.5rem 2rem;
+        margin-top: 1rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .solution-header-badge {
+        display: inline-block;
+        background: var(--brand-green);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 0.35rem 0.85rem;
+        border-radius: 50px;
+        margin-bottom: 1rem;
+      }
+
+      .solution-block h3 {
+        color: var(--brand-green);
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .solution-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+
+      @media (min-width: 850px) {
+        .solution-grid {
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+        }
+      }
+
+      .solution-image {
+        border-radius: calc(var(--radius) - 4px);
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+        height: 100%;
+        min-height: 250px;
+        background-color: #eae5dc;
+      }
+
+      .solution-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* --- EXPANDED ALTERNATIVES SECTION --- */
+      .alternatives-section {
+        margin-top: 5rem;
+        padding-top: 2rem;
+        border-top: 2px dashed var(--border-rustic);
+      }
+
+      .alternatives-intro {
+        text-align: center;
+        max-width: 820px;
+        margin: 0 auto 3rem;
+      }
+
+      .alternatives-intro h2 {
+        font-size: 2.4rem;
+        color: var(--brand-green);
+        margin-bottom: 0.75rem;
+      }
+
+      .expanded-alt-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-rustic);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 3rem;
+        overflow: hidden;
+        transition: var(--transition);
+      }
+
+      .expanded-alt-card:hover {
+        box-shadow: var(--shadow-hover);
+        border-color: var(--brand-green);
+      }
+
+      .alt-card-header-banner {
+        background: linear-gradient(
+          90deg,
+          var(--brand-green) 0%,
+          var(--brand-green-light) 100%
+        );
+        color: #ffffff;
+        padding: 1rem 1.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .alt-card-header-banner h3 {
+        color: #ffffff;
+        font-size: 1.35rem;
+      }
+
+      .alt-model-number {
+        background: var(--terracotta);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        letter-spacing: 0.5px;
+      }
+
+      .alt-card-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      @media (min-width: 850px) {
+        .alt-card-grid {
+          grid-template-columns: 380px 1fr;
+        }
+      }
+
+      .alt-media-column {
+        position: relative;
+        min-height: 280px;
+        background-color: #eae5dc;
+      }
+
+      .alt-media-column img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .alt-details-column {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .alt-detail-box {
+        margin-bottom: 1.25rem;
+      }
+
+      .alt-detail-box h4 {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--terracotta);
+        margin-bottom: 0.35rem;
+      }
+
+      .alt-detail-box p {
+        font-size: 1rem;
+        color: var(--text-main);
+      }
+
+      .alt-stats-ribbon {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        background: var(--bg-parchment);
+        border: 1px solid var(--border-rustic);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-family: "Lora", serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--brand-green);
+      }
+
+      .stat-label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+
+      /* --- COMPARISON TABLE --- */
+      .comparison-section {
+        margin-top: 5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-rustic);
+        border-radius: var(--radius);
+        padding: 2.5rem 2rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .comparison-section h3 {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .comparison-table-wrapper {
+        overflow-x: auto;
+      }
+
+      table.comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        margin-top: 1rem;
+      }
+
+      table.comparison-table th,
+      table.comparison-table td {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-rustic);
+      }
+
+      table.comparison-table th {
+        background: var(--bg-parchment);
+        font-family: "Lora", serif;
+        font-size: 1.05rem;
+        color: var(--brand-green);
+      }
+
+      table.comparison-table td.bad {
+        color: var(--alert-rust);
+        font-weight: 500;
+      }
+
+      table.comparison-table td.good {
+        color: var(--brand-green-light);
+        font-weight: 600;
+      }
+
+      /* --- PROTOTYPE SECTION --- */
+      .prototype-section {
+        margin-top: 5rem;
+        padding-top: 2rem;
+        border-top: 2px dashed var(--border-rustic);
+      }
+
+      .prototype-intro {
+        text-align: center;
+        max-width: 820px;
+        margin: 0 auto 3rem;
+      }
+
+      .prototype-intro h2 {
+        font-size: 2.4rem;
+        color: var(--brand-green);
+        margin-bottom: 0.75rem;
+      }
+
+      .prototype-intro p {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+      }
+
+      .supply-chain-map-shell {
+        background: var(--bg-card);
+        border: 1px solid var(--border-rustic);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 3rem;
+        overflow: hidden;
+      }
+
+      .supply-chain-map-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        min-width: 0;
+      }
+
+      #map-canvas {
+        grid-row: 1;
+      }
+
+      #map-sidebar {
+        grid-row: 2;
+        min-width: 0;
+      }
+
+      @media (min-width: 600px) {
+        .supply-chain-map-grid {
+          grid-template-columns: 280px minmax(0, 1fr);
+        }
+
+        #map-canvas {
+          align-self: stretch;
+          height: auto;
+          min-height: 540px;
+        }
+
+        #map-canvas,
+        #map-sidebar {
+          grid-row: auto;
+        }
+
+        #map-sidebar {
+          grid-column: 1;
+        }
+
+        #map-canvas {
+          grid-column: 2;
+        }
+      }
+
+      .map-sidebar {
+        background: linear-gradient(180deg, #f4f7f3 0%, #edf3ee 100%);
+        border-bottom: 1px solid var(--border-rustic);
+        min-width: 0;
+        padding: 1.5rem;
+      }
+
+      @media (min-width: 600px) {
+        .map-sidebar {
+          border-bottom: 0;
+          border-right: 1px solid var(--border-rustic);
+        }
+      }
+
+      .map-sidebar h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+      }
+
+      .map-control-label {
+        display: block;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin: 1rem 0 0.35rem;
+        text-transform: uppercase;
+      }
+
+      .map-control {
+        background: #ffffff;
+        border: 1px solid var(--border-rustic);
+        border-radius: 5px;
+        color: var(--text-main);
+        padding: 0.65rem 0.7rem;
+        width: 100%;
+      }
+
+      .map-route-metrics {
+        border-top: 1px solid var(--border-rustic);
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+      }
+
+      .map-route-title {
+        border-bottom: 1px solid var(--border-rustic);
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        padding-bottom: 0.8rem;
+      }
+
+      .map-route-title strong {
+        color: var(--brand-green);
+        font-size: 0.95rem;
+      }
+
+      .map-route-title span {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .map-metric {
+        border-bottom: 1px solid rgba(228, 220, 211, 0.75);
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 0.65rem 0;
+      }
+
+      .map-metric span {
+        color: var(--text-muted);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+      }
+
+      .map-metric strong {
+        color: var(--brand-green);
+        font-size: 0.92rem;
+      }
+
+      .map-road-metric {
+        gap: 0.5rem;
+      }
+
+      .map-road-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        margin-top: 0.35rem;
+      }
+
+      .map-road-list span {
+        align-items: flex-start;
+        color: var(--text-main);
+        display: flex;
+        font-size: 0.78rem;
+        gap: 0.6rem;
+        line-height: 1.4;
+        text-transform: none; /* Override parent uppercase */
+      }
+
+      .map-road-list b {
+        align-items: center;
+        background: var(--terracotta);
+        border-radius: 999px;
+        color: #ffffff;
+        display: inline-flex;
+        flex: 0 0 1.25rem;
+        font-size: 0.7rem;
+        height: 1.25rem;
+        justify-content: center;
+        width: 1.25rem;
+        font-weight: 700;
+      }
+
+      .map-empty-state {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .map-reset-button {
+        background: var(--brand-green);
+        border: 0;
+        border-radius: 5px;
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 1.25rem;
+        padding: 0.7rem 1rem;
+        width: 100%;
+      }
+
+      .map-reset-button:hover {
+        background: var(--terracotta);
+      }
+
+      #map-canvas {
+        height: 540px;
+        min-height: 0;
+        min-width: 0;
+      }
+
+      @media (max-width: 599px) {
+        #map-canvas {
+          height: 420px;
+        }
+      }
+
+      .map-marker-wrapper {
+        background: transparent;
+        border: 0;
+      }
+
+      .map-marker {
+        border: 3px solid #ffffff;
+        border-radius: 999px;
+        box-shadow: 0 2px 8px rgba(44, 40, 37, 0.3);
+        display: block;
+        height: 18px;
+        width: 18px;
+      }
+
+      .map-marker-mandi {
+        background: #2f7d4a;
+        animation: mapPulse 1.8s ease-in-out infinite;
+      }
+
+      .map-marker-metro {
+        background: #9e3b29;
+      }
+
+      .supply-chain-route {
+        animation: routeDash 1.2s linear infinite;
+      }
+
+      @keyframes routeDash {
+        to {
+          stroke-dashoffset: -22;
+        }
+      }
+
+      @keyframes mapPulse {
+        0%,
+        100% {
+          transform: scale(0.9);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+
+      .prototype-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-rustic);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr;
+        transition: var(--transition);
+        margin-bottom: 3rem;
+      }
+
+      .prototype-card:hover {
+        box-shadow: var(--shadow-hover);
+        border-color: var(--terracotta);
+      }
+
+      .prototype-content {
+        padding: 2.5rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .prototype-content h3 {
+        font-size: 1.6rem;
+        color: var(--brand-green);
+        margin-bottom: 1rem;
+      }
+
+      .prototype-content p {
+        margin-bottom: 1.5rem;
+        color: var(--text-muted);
+      }
+
+      .prototype-features,
+      .prototype-benefits {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background: var(--bg-parchment);
+        border-left: 4px solid var(--terracotta);
+        border-radius: 4px;
+      }
+
+      .prototype-features h4,
+      .prototype-benefits h4 {
+        font-size: 1.05rem;
+        color: var(--brand-green);
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .features-list,
+      .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .features-list li,
+      .benefits-list li {
+        margin-bottom: 0.75rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      .features-list li:before,
+      .benefits-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--brand-green);
+        font-weight: bold;
+      }
+
+      .prototype-cta {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-rustic);
+      }
+
+      .prototype-button {
+        display: inline-block;
+        background: var(--brand-green);
+        color: #ffffff;
+        padding: 0.85rem 1.75rem;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .prototype-button:hover {
+        background: var(--terracotta);
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      /* --- MODAL POPUP STYLING --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(44, 40, 37, 0.7);
+        z-index: 2000;
+        backdrop-filter: blur(2px);
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: 0 20px 60px rgba(44, 40, 37, 0.3);
+        max-width: 600px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 2.5rem 2rem;
+        animation: slideUp 0.3s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-rustic);
+        padding-bottom: 1rem;
+      }
+
+      .modal-header h2 {
+        font-size: 1.6rem;
+        color: var(--brand-green);
+        margin: 0;
+      }
+
+      .modal-close-btn {
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 0;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+
+      .modal-close-btn:hover {
+        color: var(--terracotta);
+        transform: rotate(90deg);
+      }
+
+      .modal-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .modal-section:empty {
+        display: none;
+      }
+
+      .modal-section h3 {
+        font-size: 1.1rem;
+        color: var(--brand-green);
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+      }
+
+      .modal-section.problem h3 {
+        color: var(--alert-rust);
+      }
+
+      .modal-section.solution h3 {
+        color: var(--brand-green-light);
+      }
+
+      .modal-section p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--text-muted);
+      }
+
+      /* --- CUSTOM CHATLING BOT STYLING OVERRIDES --- */
+      iframe[id^="chtl-"],
+      #chtl-container,
+      div[class*="chtl-"] {
+        border-radius: 16px !important;
+        box-shadow: 0 12px 35px rgba(39, 59, 43, 0.22) !important;
+      }
+
+      #chtl-script,
+      #chtl-button-container {
+        --chtl-primary-color: #c86d3b !important;
+        --chtl-bg-color: #273b2b !important;
+      }
+
+      /* --- FOOTER --- */
+      footer {
+        background: var(--brand-green);
+        color: #c2d1c5;
+        text-align: center;
+        padding: 3.5rem 1.5rem;
+        margin-top: 5rem;
+        border-top: 4px solid var(--terracotta);
+      }
+
+      footer p {
+        color: #c2d1c5;
+        font-size: 0.95rem;
+      }
+
+      footer .footer-tag {
+        font-family: "Lora", serif;
+        color: #ffffff;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+    </style>
+    <script>
+      // Modal data for all 6 stages - includes both problem/solution AND detailed pipeline content
+      const stageData = {
+        1: {
+          title: "Step 1: Farm & Inputs",
+          problem: "Fragmented smallholders with low bargaining power.",
+          problemDetail:
+            "Millions of small farmers have limited bargaining power, inconsistent quality and poor access to organised markets, creating inefficiencies at the source.",
+          solution: "Organised FPOs & cooperatives for collective power.",
+          solutionDetail:
+            "Expand FPOs, cooperatives and direct procurement to connect farmers with processors and retailers, reducing intermediaries and improving farmer realisation. Enhances bargaining power, reduces input costs through bulk purchasing, and ensures transparent direct-to-bank payments.",
+          detailedContent:
+            "<strong>Farm & Inputs</strong> is the foundational stage where farmers use seeds, fertilisers, pesticides, and machinery to grow crops or rear livestock. This stage involves smallholder farmers acquiring quality inputs and deploying them across their fields. It determines the baseline productivity and sets the financial foundation for rural households. Everything from soil preparation to harvest falls under this critical first step of the agricultural supply chain.",
+        },
+        2: {
+          title: "Step 2: Aggregation & Procurement",
+          problem: "Predatory middleman cuts & fragmented procurement.",
+          problemDetail:
+            "Multiple intermediaries, mandi dependence and fragmented procurement can increase costs while reducing the farmer's share of the final consumer price.",
+          solution: "Direct procurement channels & transparent digital pay.",
+          solutionDetail:
+            "Establish direct procurement networks and implement transparent digital payment systems to eliminate predatory middleman extraction and ensure farmers receive fair prices.",
+          detailedContent:
+            "<strong>Aggregation & Procurement</strong> is where farm produce is collected from individual farmers and consolidated into larger quantities through FPOs, cooperatives, mandis, and traders. This stage bridges the small farm-gate surpluses with commercial volume requirements, enabling produce to move from scattered smallholdings into organized supply networks. It's where produce transitions from individual farmer lots into market-ready quantities.",
+        },
+        3: {
+          title: "Step 3: Storage & Logistics",
+          problem: "Cold chain gaps causing post-harvest loss & spoilage.",
+          problemDetail:
+            "Insufficient warehouses, silos, refrigerated transport and cold storage lead to post-harvest losses, spoilage and price volatility, especially for perishables.",
+          solution: "Modern silos, scientific warehouses & cold chains.",
+          solutionDetail:
+            "Invest in modern storage infrastructure including temperature-controlled warehouses, silos, and continuous cold-chain networks to minimize post-harvest losses and maintain product quality.",
+          detailedContent:
+            "<strong>Storage & Logistics</strong> involves moving produce through warehouses, silos, and cold-chain facilities to manage seasonality and prevent spoilage. Perishable commodities like vegetables, fruits, and dairy products are stored and transported across regions to ensure availability year-round. Temperature-controlled environments and proper logistics infrastructure keep products fresh and minimize waste during distribution across India's vast geography.",
+        },
+        4: {
+          title: "Step 4: Processing & Packaging",
+          problem: "Low value addition & lack of strict quality sorting.",
+          problemDetail:
+            "Low levels of food processing, inconsistent quality standards, contamination/adulteration risks and limited traceability reduce value addition and export competitiveness.",
+          solution: "High-tier food processing, branding & export readiness.",
+          solutionDetail:
+            "Develop high-capacity food processing facilities with strict quality control, scientific sorting, branding capabilities and export-ready standards to unlock superior market value.",
+          detailedContent:
+            "<strong>Processing & Packaging</strong> is where raw agricultural commodities are cleaned, graded, milled, and transformed into value-added consumer products. This stage includes quality sorting, brand building, and packaging for retail distribution. Processing converts basic farm produce into shelf-stable products with extended shelf-life, higher market value, and enhanced marketability for both domestic and export markets.",
+        },
+        5: {
+          title: "Step 5: Distribution & Retail",
+          problem: "In-efficient transport networks & multiple handlings.",
+          problemDetail:
+            "Long distances, fragmented trucking, multiple handling points and inadequate multimodal infrastructure increase transportation costs and delivery times.",
+          solution: "Quick commerce, e-commerce & digital supply platforms.",
+          solutionDetail:
+            "Leverage modern distribution channels including e-commerce, quick-commerce platforms, and digital supply chain management to reduce handlings and improve delivery efficiency.",
+          detailedContent:
+            "<strong>Distribution & Retail</strong> is where processed products flow through wholesalers, supermarkets, traditional kiranas, e-commerce platforms, and food-service businesses to reach end consumers. This stage encompasses the entire last-mile journey of products from warehouses to retail shelves and directly to customers. It connects the supply network with consumer demand across urban and rural markets in India.",
+        },
+        6: {
+          title: "Step 6: Consumption & Waste",
+          problem: "High food waste and unstable consumer price spikes.",
+          problemDetail:
+            "Complex distribution networks, inventory inefficiencies, food wastage and price fluctuations make it difficult to consistently deliver affordable, high-quality food to consumers.",
+          solution: "Direct-to-consumer models & AI demand forecasting.",
+          solutionDetail:
+            "Implement direct-to-consumer channels, AI-powered demand forecasting, and consumer-centric models to reduce waste, stabilize prices, and ensure consistent food availability.",
+          detailedContent:
+            "<strong>Consumption & Waste</strong> is the final stage where consumers purchase food through retail outlets and food-service channels. Unsold or surplus produce enters waste streams including landfills, recycling facilities, and composting operations. This stage completes the agricultural lifecycle, encompassing both successful consumer purchases and the disposal or repurposing of unutilized food products.",
+        },
+      };
+
+      // Track current modal type
+      let currentModalType = "matrix"; // 'matrix' or 'detail'
+
+      // Open matrix modal (problem/solution view)
+      function openModal(stageNum) {
+        currentModalType = "matrix";
+        const data = stageData[stageNum];
+        const modal = document.getElementById("stageModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const problemSection = document.getElementById("problemSection");
+        const solutionSection = document.getElementById("solutionSection");
+
+        modalTitle.textContent = data.title;
+
+        problemSection.innerHTML = `
+          <h3>Core Problem</h3>
+          <p>${data.problem}</p>
+          <p style="font-size: 0.9rem; margin-top: 0.75rem;">${data.problemDetail}</p>
+        `;
+
+        solutionSection.innerHTML = `
+          <h3>Systemic Solution</h3>
+          <p>${data.solution}</p>
+          <p style="font-size: 0.9rem; margin-top: 0.75rem;">${data.solutionDetail}</p>
+        `;
+
+        modal.classList.add("active");
+      }
+
+      // Open detail modal (pipeline content view)
+      function openDetailModal(stageNum) {
+        currentModalType = "detail";
+        const data = stageData[stageNum];
+        const modal = document.getElementById("stageModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const problemSection = document.getElementById("problemSection");
+        const solutionSection = document.getElementById("solutionSection");
+
+        modalTitle.textContent = data.title;
+
+        problemSection.innerHTML = `
+          <p style="font-size: 0.95rem; line-height: 1.6;">${data.detailedContent}</p>
+        `;
+
+        solutionSection.innerHTML = "";
+
+        modal.classList.add("active");
+      }
+
+      function closeModal() {
+        document.getElementById("stageModal").classList.remove("active");
+      }
+
+      // Close modal when clicking outside
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("stageModal");
+        modal.addEventListener("click", function (e) {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+      });
+
+      // Close modal on Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeModal();
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <!-- Modal Popup -->
+    <div id="stageModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Stage Title</h2>
+          <button class="modal-close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div id="problemSection" class="modal-section problem"></div>
+        <div id="solutionSection" class="modal-section solution"></div>
+      </div>
+    </div>
+
+    <!-- Chatling Bot Custom Theme Configuration -->
+    <script>
+      window.chtlConfig = {
+        chatbotId: "7158222118",
+        headerBgColor: "#273B2B",
+        headerTextColor: "#FFFFFF",
+        primaryColor: "#C86D3B",
+        userMessageBgColor: "#273B2B",
+        userMessageTextColor: "#FFFFFF",
+        botMessageBgColor: "#F4F0E8",
+        botMessageTextColor: "#2C2825",
+        launcherBgColor: "#C86D3B",
+        launcherIconColor: "#FFFFFF",
+      };
+    </script>
+    <script
+      async
+      data-id="7158222118"
+      id="chtl-script"
+      type="text/javascript"
+      src="https://chatling.ai/js/embed.js"
+    ></script>
+
+    <!-- Header Banner -->
+    <div class="top-banner">
+      INDIAN AGRI-INFRASTRUCTURE & SYSTEMIC ALTERNATIVES REPORT • 2026
+    </div>
+
+    <header class="hero">
+      <h1>Indian Agricultural Supply Chain</h1>
+      <p>
+        Deconstructing traditional mandi bottlenecks and exploring modern,
+        integrated alternative frameworks across India.
+      </p>
+    </header>
+
+    <!-- Navigation Menu - Uniform compact buttons -->
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#challenges" class="nav-alert">Problems</a>
+      <a href="#expanded-alternatives" class="nav-alt">Solutions</a>
+      <a href="#comparison">Matrix</a>
+      <a href="#corridors" class="nav-alt">Corridors</a>
+      <a href="#prototype" class="nav-alt">Prototype</a>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container">
+      <!-- GRAPHIC OVERVIEW SECTION -->
+      <section id="overview" class="overview-graphic-section">
+        <h3>Pipeline Visual Overview</h3>
+        <p class="overview-subtitle">
+          Quick graphic summary of all 6 steps in the agricultural lifecycle.
+        </p>
+        <div class="flow-graphic-container">
+          <a onclick="openDetailModal(1)" style="cursor: pointer">
+            <div class="flow-step-box">
+              <span class="flow-step-num">Step 01</span>
+              <h4>Farm & Inputs</h4>
+              <p>
+                Seeds, fertilisers, pesticides & machinery used by farmers to
+                cultivate crops.
+              </p>
+            </div>
+          </a>
+          <a onclick="openDetailModal(2)" style="cursor: pointer">
+            <div class="flow-step-box">
+              <span class="flow-step-num">Step 02</span>
+              <h4>Aggregation</h4>
+              <p>
+                Produce collected via FPOs, mandis & traders into volume
+                quantities.
+              </p>
+            </div>
+          </a>
+          <a onclick="openDetailModal(3)" style="cursor: pointer">
+            <div class="flow-step-box">
+              <span class="flow-step-num">Step 03</span>
+              <h4>Storage</h4>
+              <p>
+                Warehouses, silos & cold chains managing seasonality and
+                spoilage.
+              </p>
+            </div>
+          </a>
+          <a onclick="openDetailModal(4)" style="cursor: pointer">
+            <div class="flow-step-box">
+              <span class="flow-step-num">Step 04</span>
+              <h4>Processing</h4>
+              <p>
+                Cleaning, grading, milling & packaging into value-added goods.
+              </p>
+            </div>
+          </a>
+          <a onclick="openDetailModal(5)" style="cursor: pointer">
+            <div class="flow-step-box">
+              <span class="flow-step-num">Step 05</span>
+              <h4>Distribution</h4>
+              <p>
+                Moving goods through wholesalers, retail, e-commerce & quick
+                commerce.
+              </p>
+            </div>
+          </a>
+          <a onclick="openDetailModal(6)" style="cursor: pointer">
+            <div class="flow-step-box">
+              <span class="flow-step-num">Step 06</span>
+              <h4>Consumption</h4>
+              <p>
+                End consumers and food service purchase goods; surplus enters
+                waste streams.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- NEW: Consolidated Problems & Solutions Matrix Summary -->
+        <div class="overview-matrix-wrapper">
+          <h4>Consolidated Stage-by-Stage: Problem vs. Solution</h4>
+          <div class="matrix-grid">
+            <!-- Stage 1 -->
+            <div class="matrix-card" onclick="openModal(1)">
+              <div class="matrix-card-header">
+                Step 1: Farm & Inputs <span>Stage 01</span>
+              </div>
+              <div class="matrix-point problem-text">
+                <strong>Core Problem</strong>
+                <p>Fragmented smallholders with low bargaining power.</p>
+              </div>
+              <div class="matrix-point solution-text">
+                <strong>Systemic Solution</strong>
+                <p>Organised FPOs & cooperatives for collective power.</p>
+              </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="matrix-card" onclick="openModal(2)">
+              <div class="matrix-card-header">
+                Step 2: Aggregation <span>Stage 02</span>
+              </div>
+              <div class="matrix-point problem-text">
+                <strong>Core Problem</strong>
+                <p>Predatory middleman cuts & fragmented procurement.</p>
+              </div>
+              <div class="matrix-point solution-text">
+                <strong>Systemic Solution</strong>
+                <p>Direct procurement channels & transparent digital pay.</p>
+              </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="matrix-card" onclick="openModal(3)">
+              <div class="matrix-card-header">
+                Step 3: Storage & Logistics <span>Stage 03</span>
+              </div>
+              <div class="matrix-point problem-text">
+                <strong>Core Problem</strong>
+                <p>Cold chain gaps causing post-harvest loss & spoilage.</p>
+              </div>
+              <div class="matrix-point solution-text">
+                <strong>Systemic Solution</strong>
+                <p>Modern silos, scientific warehouses & cold chains.</p>
+              </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="matrix-card" onclick="openModal(4)">
+              <div class="matrix-card-header">
+                Step 4: Processing <span>Stage 04</span>
+              </div>
+              <div class="matrix-point problem-text">
+                <strong>Core Problem</strong>
+                <p>Low value addition & lack of strict quality sorting.</p>
+              </div>
+              <div class="matrix-point solution-text">
+                <strong>Systemic Solution</strong>
+                <p>High-tier food processing, branding & export readiness.</p>
+              </div>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="matrix-card" onclick="openModal(5)">
+              <div class="matrix-card-header">
+                Step 5: Distribution <span>Stage 05</span>
+              </div>
+              <div class="matrix-point problem-text">
+                <strong>Core Problem</strong>
+                <p>In-efficient transport networks & multiple handlings.</p>
+              </div>
+              <div class="matrix-point solution-text">
+                <strong>Systemic Solution</strong>
+                <p>Quick commerce, e-commerce & digital supply platforms.</p>
+              </div>
+            </div>
+
+            <!-- Stage 6 -->
+            <div class="matrix-card" onclick="openModal(6)">
+              <div class="matrix-card-header">
+                Step 6: Consumption <span>Stage 06</span>
+              </div>
+              <div class="matrix-point problem-text">
+                <strong>Core Problem</strong>
+                <p>High food waste and unstable consumer price spikes.</p>
+              </div>
+              <div class="matrix-point solution-text">
+                <strong>Systemic Solution</strong>
+                <p>Direct-to-consumer models & AI demand forecasting.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-intro">
+        <h2>The 6 Pipeline Steps in Detail</h2>
+        <p>
+          A step-by-step breakdown of how food travels across India's
+          agricultural corridors.
+        </p>
+      </div>
+
+      <!-- Stage 1 -->
+      <section id="inputs" class="stage-card">
+        <div class="stage-image-container">
+          <span class="stage-number-tag">Step 01</span>
+          <img
+            src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=800&q=80"
+            alt="Indian farmer preparing seeds and rich farm soil"
+            loading="lazy"
+          />
+        </div>
+        <div class="stage-content">
+          <h2><span>Step 1</span> Farm & Inputs</h2>
+          <p>
+            Seeds, fertilisers, pesticides, machinery and other inputs are
+            deployed by farmers to grow crops or rear livestock, culminating in
+            harvesting. Access to quality inputs determines baseline yields and
+            sets the financial stage for rural households.
+          </p>
+        </div>
+      </section>
+
+      <!-- Stage 2 -->
+      <section id="aggregation" class="stage-card">
+        <div class="stage-image-container">
+          <span class="stage-number-tag">Step 02</span>
+          <img
+            src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=800&q=80"
+            alt="APMC Mandi wholesale trading floor"
+            loading="lazy"
+          />
+        </div>
+        <div class="stage-content">
+          <h2><span>Step 2</span> Aggregation & Procurement</h2>
+          <p>
+            Produce is collected from farmers through FPOs, cooperatives,
+            mandis, traders and aggregators and consolidated into larger
+            quantities. This phase bridges tiny farm-gate surpluses with
+            commercial volume demands.
+          </p>
+        </div>
+      </section>
+
+      <!-- Stage 3 -->
+      <section id="storage" class="stage-card">
+        <div class="stage-image-container">
+          <span class="stage-number-tag">Step 03</span>
+          <img
+            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
+            alt="Logistics truck and warehouse storage"
+            loading="lazy"
+          />
+        </div>
+        <div class="stage-content">
+          <h2><span>Step 3</span> Storage & Logistics</h2>
+          <p>
+            Produce moves through warehouses, silos, cold storage and
+            transportation networks to manage seasonality, spoilage and
+            geographic distribution. Robust logistics protect perishable crops
+            from rapid decay.
+          </p>
+        </div>
+      </section>
+
+      <!-- Stage 4 -->
+      <section id="processing" class="stage-card">
+        <div class="stage-image-container">
+          <span class="stage-number-tag">Step 04</span>
+          <img
+            src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=800&q=80"
+            alt="Processing facility and food packaging"
+            loading="lazy"
+          />
+        </div>
+        <div class="stage-content">
+          <h2><span>Step 4</span> Processing & Packaging</h2>
+          <p>
+            Raw commodities are cleaned, graded, milled and converted into
+            processed or value-added foods, then packaged and branded. This adds
+            shelf-life and unlocks superior market value.
+          </p>
+        </div>
+      </section>
+
+      <!-- Stage 5 -->
+      <section id="distribution" class="stage-card">
+        <div class="stage-image-container">
+          <span class="stage-number-tag">Step 05</span>
+          <img
+            src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
+            alt="Fresh produce retail market and distribution"
+            loading="lazy"
+          />
+        </div>
+        <div class="stage-content">
+          <h2><span>Step 5</span> Distribution & Retail</h2>
+          <p>
+            Products move through distributors, wholesalers, supermarkets,
+            kiranas, e-commerce and quick-commerce to reach consumers. This
+            connects final retail demand with the broader supply network.
+          </p>
+        </div>
+      </section>
+
+      <!-- Stage 6 -->
+      <section id="consumption" class="stage-card">
+        <div class="stage-image-container">
+          <span class="stage-number-tag">Step 06</span>
+          <img
+            src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80"
+            alt="Sustainable consumption and waste management"
+            loading="lazy"
+          />
+        </div>
+        <div class="stage-content">
+          <h2><span>Step 6</span> Consumption & Waste</h2>
+          <p>
+            Consumers buy food through retail or restaurants/food-service
+            businesses; unsold and discarded food enters waste, recycling,
+            animal-feed or compost streams, completing the life cycle.
+          </p>
+        </div>
+      </section>
+
+      <!-- SYSTEMIC PROBLEMS SECTION -->
+      <div id="challenges" class="problems-wrapper">
+        <div class="problems-header">
+          <h2>Problems in the Indian Food Supply Chain</h2>
+          <p>
+            6 Key Points detailing structural breakdowns across agricultural
+            touchpoints.
+          </p>
+        </div>
+
+        <div class="problem-grid">
+          <div class="problem-block">
+            <h3>1. Fragmented Farming</h3>
+            <p>
+              Millions of small farmers have limited bargaining power,
+              inconsistent quality and poor access to organised markets,
+              creating inefficiencies at the source.
+            </p>
+          </div>
+
+          <div class="problem-block">
+            <h3>2. Poor Aggregation & Procurement</h3>
+            <p>
+              Multiple intermediaries, mandi dependence and fragmented
+              procurement can increase costs while reducing the farmer's share
+              of the final consumer price.
+            </p>
+          </div>
+
+          <div class="problem-block">
+            <h3>3. Storage & Cold-Chain Gaps</h3>
+            <p>
+              Insufficient warehouses, silos, refrigerated transport and cold
+              storage lead to post-harvest losses, spoilage and price
+              volatility, especially for perishables.
+            </p>
+          </div>
+
+          <div class="problem-block">
+            <h3>4. Inefficient Logistics</h3>
+            <p>
+              Long distances, fragmented trucking, multiple handling points and
+              inadequate multimodal infrastructure increase transportation costs
+              and delivery times.
+            </p>
+          </div>
+
+          <div class="problem-block">
+            <h3>5. Processing & Quality Issues</h3>
+            <p>
+              Low levels of food processing, inconsistent quality standards,
+              contamination/adulteration risks and limited traceability reduce
+              value addition and export competitiveness.
+            </p>
+          </div>
+
+          <div class="problem-block">
+            <h3>6. Distribution & Consumer Challenges</h3>
+            <p>
+              Complex distribution networks, inventory inefficiencies, food
+              wastage and price fluctuations make it difficult to consistently
+              deliver affordable, high-quality food to consumers.
+            </p>
+          </div>
+        </div>
+
+        <!-- STRUCTURAL SOLUTION SUMMARY -->
+        <div class="solution-block">
+          <span class="solution-header-badge">Strategic Transformation</span>
+          <h3>The Core Solution: Operational Scale Over Micro-Extraction</h3>
+
+          <div class="solution-grid">
+            <div>
+              <p>
+                Fixing India's food supply chain requires re-engineering the
+                architecture so fewer, more integrated entities handle wider
+                chunks of the supply chain.
+              </p>
+              <p style="margin-top: 0.75rem">
+                By focusing on end-to-end efficiency, cold-chain continuity, and
+                digital transparency, the agricultural sector can eliminate
+                predatory middleman extraction and secure higher returns for
+                smallholders.
+              </p>
+            </div>
+            <div class="solution-image">
+              <img
+                src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=800&q=80"
+                alt="Modern technology enabled direct farming solution"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOLUTIONS & ALTERNATIVES SECTION -->
+      <section id="expanded-alternatives" class="alternatives-section">
+        <div class="alternatives-intro">
+          <h2>Solutions & Alternatives for the Indian Food Supply Chain</h2>
+          <p>
+            6 Strategic Points transforming agricultural logistics, processing,
+            and distribution.
+          </p>
+        </div>
+
+        <!-- Alternative 1 -->
+        <article class="expanded-alt-card">
+          <div class="alt-card-header-banner">
+            <h3>1. Organised Farmer Aggregation</h3>
+            <span class="alt-model-number">Point #01</span>
+          </div>
+          <div class="alt-card-grid">
+            <div class="alt-media-column">
+              <img
+                src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=800&q=80"
+                alt="Farmer Producer Organization collective meeting"
+                loading="lazy"
+              />
+            </div>
+            <div class="alt-details-column">
+              <div>
+                <div class="alt-detail-box">
+                  <h4>Strategic Objective</h4>
+                  <p>
+                    Expand FPOs, cooperatives and direct procurement to connect
+                    farmers with processors and retailers, reducing
+                    intermediaries and improving farmer realisation.
+                  </p>
+                </div>
+                <div class="alt-detail-box">
+                  <h4>Impact Metrics</h4>
+                  <p>
+                    Enhances bargaining power, reduces input costs through bulk
+                    purchasing, and ensures transparent direct-to-bank payments.
+                  </p>
+                </div>
+              </div>
+              <div class="alt-stats-ribbon">
+                <div class="stat-item">
+                  <div class="stat-value">+25%</div>
+                  <div class="stat-label">Price Realization</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">-18%</div>
+                  <div class="stat-label">Input Cost Savings</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Direct</div>
+                  <div class="stat-label">Market Linkage</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Alternative 2 -->
+        <article class="expanded-alt-card">
+          <div class="alt-card-header-banner">
+            <h3>2. Modern Storage Infrastructure</h3>
+            <span class="alt-model-number">Point #02</span>
+          </div>
+          <div class="alt-card-grid">
+            <div class="alt-media-column">
+              <img
+                src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
+                alt="Modern silos and warehouse storage"
+                loading="lazy"
+              />
+            </div>
+            <div class="alt-details-column">
+              <div>
+                <div class="alt-detail-box">
+                  <h4>Strategic Objective</h4>
+                  <p>
+                    Build more silos, scientific warehouses and cold-storage
+                    facilities, supported by technology-driven inventory
+                    management to reduce wastage and seasonal price
+                    fluctuations.
+                  </p>
+                </div>
+                <div class="alt-detail-box">
+                  <h4>Impact Metrics</h4>
+                  <p>
+                    Prevents post-harvest distress selling by allowing farmers
+                    to store produce and leverage warehouse receipt financing.
+                  </p>
+                </div>
+              </div>
+              <div class="alt-stats-ribbon">
+                <div class="stat-item">
+                  <div class="stat-value">-30%</div>
+                  <div class="stat-label">Spoilage Loss</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">+30%</div>
+                  <div class="stat-label">Off-Peak Value</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">e-NWR</div>
+                  <div class="stat-label">Receipt Credit</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Alternative 3 -->
+        <article class="expanded-alt-card">
+          <div class="alt-card-header-banner">
+            <h3>3. Integrated Cold-Chain & Logistics</h3>
+            <span class="alt-model-number">Point #03</span>
+          </div>
+          <div class="alt-card-grid">
+            <div class="alt-media-column">
+              <img
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
+                alt="Refrigerated logistics and cold chain"
+                loading="lazy"
+              />
+            </div>
+            <div class="alt-details-column">
+              <div>
+                <div class="alt-detail-box">
+                  <h4>Strategic Objective</h4>
+                  <p>
+                    Develop end-to-end farm-to-market cold chains, multimodal
+                    transport and specialised food logistics to reduce handling,
+                    transit time and spoilage.
+                  </p>
+                </div>
+                <div class="alt-detail-box">
+                  <h4>Impact Metrics</h4>
+                  <p>
+                    Accelerates delivery from rural harvesting zones to urban
+                    retail shelves while maintaining strict temperature
+                    controls.
+                  </p>
+                </div>
+              </div>
+              <div class="alt-stats-ribbon">
+                <div class="stat-item">
+                  <div class="stat-value">&lt; 4%</div>
+                  <div class="stat-label">Transit Wastage</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">12 Hrs</div>
+                  <div class="stat-label">Speed to Retail</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Multi</div>
+                  <div class="stat-label">Modal Transit</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Alternative 4 -->
+        <article class="expanded-alt-card">
+          <div class="alt-card-header-banner">
+            <h3>4. Higher Food Processing</h3>
+            <span class="alt-model-number">Point #04</span>
+          </div>
+          <div class="alt-card-grid">
+            <div class="alt-media-column">
+              <img
+                src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=800&q=80"
+                alt="Value added food processing facility"
+                loading="lazy"
+              />
+            </div>
+            <div class="alt-details-column">
+              <div>
+                <div class="alt-detail-box">
+                  <h4>Strategic Objective</h4>
+                  <p>
+                    Shift from selling raw commodities to value-added
+                    processing, packaging and branding, increasing shelf life,
+                    farmer demand and India's food-export potential.
+                  </p>
+                </div>
+                <div class="alt-detail-box">
+                  <h4>Impact Metrics</h4>
+                  <p>
+                    Diversifies agricultural revenue streams and insulates
+                    farmers from raw commodity price crashes.
+                  </p>
+                </div>
+              </div>
+              <div class="alt-stats-ribbon">
+                <div class="stat-item">
+                  <div class="stat-value">Extended</div>
+                  <div class="stat-label">Shelf Life</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Global</div>
+                  <div class="stat-label">Export Readiness</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Higher</div>
+                  <div class="stat-label">Value Addition</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Alternative 5 -->
+        <article class="expanded-alt-card">
+          <div class="alt-card-header-banner">
+            <h3>5. Digital Supply-Chain Platforms</h3>
+            <span class="alt-model-number">Point #05</span>
+          </div>
+          <div class="alt-card-grid">
+            <div class="alt-media-column">
+              <img
+                src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=800&q=80"
+                alt="Digital agricultural trading platforms and AI"
+                loading="lazy"
+              />
+            </div>
+            <div class="alt-details-column">
+              <div>
+                <div class="alt-detail-box">
+                  <h4>Strategic Objective</h4>
+                  <p>
+                    Use AI, IoT, blockchain/traceability and digital
+                    marketplaces to improve demand forecasting, quality
+                    monitoring, price discovery, procurement and inventory
+                    management.
+                  </p>
+                </div>
+                <div class="alt-detail-box">
+                  <h4>Impact Metrics</h4>
+                  <p>
+                    Removes regional information asymmetries, enabling real-time
+                    bidding and transparent national price discovery.
+                  </p>
+                </div>
+              </div>
+              <div class="alt-stats-ribbon">
+                <div class="stat-item">
+                  <div class="stat-value">Real-Time</div>
+                  <div class="stat-label">Price Discovery</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">AI/IoT</div>
+                  <div class="stat-label">Quality Assaying</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Trace</div>
+                  <div class="stat-label">Blockchain Tracking</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Alternative 6 -->
+        <article class="expanded-alt-card">
+          <div class="alt-card-header-banner">
+            <h3>6. Direct-to-Consumer & Modern Retail</h3>
+            <span class="alt-model-number">Point #06</span>
+          </div>
+          <div class="alt-card-grid">
+            <div class="alt-media-column">
+              <img
+                src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=800&q=80"
+                alt="Modern retail and direct-to-consumer market"
+                loading="lazy"
+              />
+            </div>
+            <div class="alt-details-column">
+              <div>
+                <div class="alt-detail-box">
+                  <h4>Strategic Objective</h4>
+                  <p>
+                    Expand e-commerce, quick commerce, organised retail,
+                    farm-to-consumer models and institutional procurement to
+                    shorten the supply chain and give consumers better price,
+                    quality and availability.
+                  </p>
+                </div>
+                <div class="alt-detail-box">
+                  <h4>Impact Metrics</h4>
+                  <p>
+                    Bypasses up to six legacy middleman tiers, maximizing value
+                    retention for producers and freshness for shoppers.
+                  </p>
+                </div>
+              </div>
+              <div class="alt-stats-ribbon">
+                <div class="stat-item">
+                  <div class="stat-value">100%</div>
+                  <div class="stat-label">Farmer Share</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Quick</div>
+                  <div class="stat-label">Urban Delivery</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">Zero</div>
+                  <div class="stat-label">Middleman Bloat</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- COMPARISON MATRIX TABLE -->
+      <div id="comparison" class="comparison-section">
+        <h3>Architectural System Comparison</h3>
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Feature / Dimension</th>
+                <th>Traditional Fragmented Mandi System</th>
+                <th>Modern Integrated Alternative</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Intermediary Layers</strong></td>
+                <td class="bad">6 Distinct Extraction Intermediaries</td>
+                <td class="good">3 Integrated Structural Chunks</td>
+              </tr>
+              <tr>
+                <td><strong>Farmer Earnings Basis</strong></td>
+                <td class="bad">Negative net returns / limited bargaining</td>
+                <td class="good">Fair market value & quality premiums</td>
+              </tr>
+              <tr>
+                <td><strong>Deduction & Arbitrary Fees</strong></td>
+                <td class="bad">High ("Talu" cuts, unrecorded commissions)</td>
+                <td class="good">
+                  Transparent digital weighing & direct bank pay
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Efficiency Driver</strong></td>
+                <td class="bad">Per-transaction value extraction</td>
+                <td class="good">End-to-end logistics & scale efficiency</td>
+              </tr>
+              <tr>
+                <td><strong>Produce Wastage</strong></td>
+                <td class="bad">Severe cold storage gaps & transit loss</td>
+                <td class="good">Integrated cold chain & modern storage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- OUR PROTOTYPE SECTION -->
+      <section id="prototype" class="prototype-section">
+        <div class="prototype-intro">
+          <h2>Our Prototype: Smart Farm Monitoring System</h2>
+          <p>
+            Bringing systemic agricultural solutions to life through practical
+            implementation. The Krishi Vigyan Plant Monitor Dashboard
+            demonstrates real-time data collection, crop health tracking, and
+            intelligent farm management.
+          </p>
+        </div>
+
+        <section class="supply-chain-map-shell" aria-labelledby="map-title">
+          <div class="supply-chain-map-grid">
+            <aside id="map-sidebar" class="map-sidebar">
+              <h3 id="map-title">Supply Route Explorer</h3>
+              <label class="map-control-label" for="map-crop-select"
+                >Crop</label
+              >
+              <select id="map-crop-select" class="map-control">
+                <option value="rice">Rice</option>
+                <option value="wheat">Wheat</option>
+                <option value="sugarcane">Sugarcane</option>
+                <option value="pulses">Pulses</option>
+                <option value="cotton">Cotton</option>
+                <option value="soybean">Soybean</option>
+              </select>
+              <label class="map-control-label" for="map-source-select"
+                >Source city</label
+              >
+              <select id="map-source-select" class="map-control"></select>
+              <label class="map-control-label" for="map-destination-select"
+                >Destination</label
+              >
+              <select id="map-destination-select" class="map-control">
+                <option value="delhi">Delhi</option>
+                <option value="mumbai" selected>Mumbai</option>
+                <option value="bengaluru">Bengaluru</option>
+                <option value="kolkata">Kolkata</option>
+                <option value="chennai">Chennai</option>
+              </select>
+              <div
+                id="map-route-metrics"
+                class="map-route-metrics"
+                aria-live="polite"
+              ></div>
+              <button
+                id="map-reset-button"
+                class="map-reset-button"
+                type="button"
+              >
+                Reset Map
+              </button>
+            </aside>
+            <div
+              id="map-canvas"
+              role="application"
+              aria-label="Interactive Indian agricultural supply chain map"
+            ></div>
+          </div>
+        </section>
+
+        <div class="prototype-card">
+          <div class="prototype-content">
+            <h3>Krishi Vigyan | Professional Smart Farm Dashboard</h3>
+            <p>
+              A cutting-edge IoT-enabled dashboard designed to help farmers
+              monitor crop health in real-time. This prototype showcases how
+              modern technology can bridge the gap between traditional farming
+              practices and data-driven agricultural decision-making.
+            </p>
+
+            <div class="prototype-features">
+              <h4>Key Features:</h4>
+              <ul class="features-list">
+                <li>
+                  <strong>Real-Time Monitoring:</strong> Live telemetry from
+                  soil sensors, moisture monitors, and light intensity trackers
+                </li>
+                <li>
+                  <strong>Predictive Insights:</strong> AI-powered anomaly
+                  detection for early intervention
+                </li>
+                <li>
+                  <strong>Simulation & Testing:</strong> Built-in simulator for
+                  testing crop responses and optimization
+                </li>
+                <li>
+                  <strong>Farm Control Center:</strong> Centralized management
+                  interface for multiple plots and parameters
+                </li>
+                <li>
+                  <strong>Data-Driven Decisions:</strong> Historical analytics
+                  to inform planting, watering, and harvesting strategies
+                </li>
+              </ul>
+            </div>
+
+            <div class="prototype-benefits">
+              <h4>Impact on Agricultural Supply Chain:</h4>
+              <p style="margin-bottom: 1rem">
+                This prototype directly addresses multiple bottlenecks
+                identified in our systemic analysis:
+              </p>
+              <ul class="benefits-list">
+                <li>
+                  <strong>Farm & Inputs:</strong> Optimizes input utilization
+                  through precision monitoring
+                </li>
+                <li>
+                  <strong>Storage & Logistics:</strong> Predicts harvest timing
+                  to minimize spoilage
+                </li>
+                <li>
+                  <strong>Quality Control:</strong> Ensures consistent produce
+                  quality through real-time tracking
+                </li>
+                <li>
+                  <strong>Cost Reduction:</strong> Reduces wasteful inputs via
+                  data-driven recommendations
+                </li>
+              </ul>
+            </div>
+
+            <div class="prototype-cta">
+              <a
+                href="Plant%20monitor%20website/Main/Plant%20monitor%20dashboard.html"
+                target="_blank"
+                class="prototype-button"
+              >
+                Launch Plant Monitor Dashboard →
+              </a>
+              <p
+                style="
+                  font-size: 0.9rem;
+                  color: var(--text-muted);
+                  margin-top: 1rem;
+                "
+              >
+                Open the interactive dashboard to explore real-time farm
+                monitoring in action
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p class="footer-tag">Indian Agricultural Supply Chain Project</p>
+      <p>
+        &copy; 2026 Indian Agri-Chain Informational Project. Re-engineering
+        rural economics through integration & structural innovation.
+      </p>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./supplyChainMap.js"></script>
+  </body>
+</html>

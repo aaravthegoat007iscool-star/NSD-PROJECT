@@ -2,83 +2,69 @@ const CROPS = {
   rice: {
     name: "Rice",
     color: "#2f7d4a",
-    origins: ["ludhiana", "indore", "patna", "guntur"],
-    production: "Punjab, Haryana, Madhya Pradesh & Andhra Pradesh",
+    origins: ["ludhiana", "indore"],
+    production: "Punjab, Haryana and Madhya Pradesh",
   },
   wheat: {
     name: "Wheat",
     color: "#b7791f",
-    origins: ["ludhiana", "indore", "patna"],
-    production: "Punjab, Haryana, MP & Uttar Pradesh",
+    origins: ["ludhiana", "indore"],
+    production: "Punjab, Haryana and Madhya Pradesh",
   },
   sugarcane: {
     name: "Sugarcane",
     color: "#4f8f45",
-    origins: ["latur", "indore", "guntur"],
-    production: "Maharashtra, MP & Andhra Pradesh",
+    origins: ["latur", "indore"],
+    production: "Maharashtra and Madhya Pradesh",
   },
   pulses: {
     name: "Pulses",
     color: "#8a5a44",
-    origins: ["latur", "indore", "patna"],
-    production: "Maharashtra, MP, Rajasthan & Bihar",
+    origins: ["latur", "indore"],
+    production: "Maharashtra, Madhya Pradesh and Rajasthan",
   },
   cotton: {
     name: "Cotton",
     color: "#9b4d73",
-    origins: ["rajkot", "latur", "guntur"],
-    production: "Gujarat, Maharashtra & Andhra Pradesh",
+    origins: ["rajkot", "latur"],
+    production: "Gujarat and Maharashtra",
   },
   soybean: {
     name: "Soybean",
     color: "#6b7d32",
-    origins: ["indore", "latur", "rajkot"],
-    production: "Madhya Pradesh, Maharashtra & Gujarat",
+    origins: ["indore", "latur"],
+    production: "Madhya Pradesh and Maharashtra",
   },
 };
 
 const ORIGINS = {
   ludhiana: {
-    name: "Ludhiana Grain Mandi",
+    name: "Ludhiana Mandi",
     city: "Ludhiana",
     coordinates: [30.901, 75.8573],
     state: "Punjab",
-    volume: "High-volume northern grain & rice hub",
+    volume: "High-volume grain hub",
   },
   indore: {
-    name: "Indore Anaj Mandi",
+    name: "Indore Mandi",
     city: "Indore",
     coordinates: [22.7196, 75.8577],
     state: "Madhya Pradesh",
-    volume: "Central India primary aggregation hub",
+    volume: "Central aggregation hub",
   },
   latur: {
-    name: "Latur Krishi Upaj Mandi",
+    name: "Latur Mandi",
     city: "Latur",
     coordinates: [18.4088, 76.5604],
     state: "Maharashtra",
-    volume: "Marathwada pulse and sugarcane hub",
+    volume: "Pulse and sugar hub",
   },
   rajkot: {
-    name: "Rajkot APMC Mandi",
+    name: "Rajkot Mandi",
     city: "Rajkot",
     coordinates: [22.3039, 70.8022],
     state: "Gujarat",
-    volume: "Saurashtra cotton and oilseed hub",
-  },
-  patna: {
-    name: "Patna APMC Market",
-    city: "Patna",
-    coordinates: [25.5941, 85.1376],
-    state: "Bihar",
-    volume: "Eastern grain and pulse feeder hub",
-  },
-  guntur: {
-    name: "Guntur Agricultural Market",
-    city: "Guntur",
-    coordinates: [16.3067, 80.4365],
-    state: "Andhra Pradesh",
-    volume: "Southern commercial crop hub",
+    volume: "Cotton aggregation hub",
   },
 };
 
@@ -251,13 +237,11 @@ class SupplyChainMapManager {
       this.options.center || [20.5937, 78.9629],
       this.options.zoom || 5,
     );
-    // Using OpenStreetMap Voyager / Detailed tiles for high detail road network visualization
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
       {
         attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
-        subdomains: "abcd",
-        maxZoom: 19,
+        maxZoom: 18,
       },
     ).addTo(this.map);
     this.layers = { hubs: L.layerGroup(), routes: L.layerGroup() };
